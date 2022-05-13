@@ -64,7 +64,7 @@ class Crawler:
             if not response.ok:
                 continue
             soup = BeautifulSoup (response.text, 'lxml')
-            self._extract_url(soup)
+            self._extract_url(article_bs)
 
 
     def get_search_urls(self):
