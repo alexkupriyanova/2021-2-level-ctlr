@@ -145,15 +145,11 @@ def validate_config(crawler_path):
 
 
 if __name__ == '__main__':
-    seed_urls_main, total_articles_main = validate_config(CRAWLER_CONFIG_PATH)
+    main_seed_urls, main_total_articles = validate_config(CRAWLER_CONFIG_PATH)
     prepare_environment(ASSETS_PATH)
-
-    crawler = Crawler(seed_urls_main, total_articles_main)
+    crawler = Crawler(main_seed_urls, main_total_articles)
     crawler.find_articles()
-
-    COUNTER_ID = 1
-    for article_url_main in crawler.urls:
-        article_parser = HTMLParser(article_url = article_url_main, article_id = COUNTER_ID)
+    for i, crawler_url in enumerate(crawler.urls):
+        article_parser = HTMLParser(article_url=crawler_url, article_id=i + 1)
         article = article_parser.parse()
         article.save_raw()
-        COUNTER_ID += 1
