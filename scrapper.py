@@ -79,10 +79,10 @@ class HTMLParser:
 
     def _fill_article_with_meta_information(self, article_bs):
 
-        self.article.title = article_bs.find('h2', class_= 'mname').text.strip()
+        self.article.title = article_bs.find_all('h2', class_= 'mname').text.strip()
 
         try:
-            self.article.author = article_bs.find('p', 'font size="3"', 'strong', 'em').text.strip().split('  ')[0]
+            self.article.author = article_bs.find_all('p', 'font size="3"', 'strong', 'em').text.strip().split('  ')[0]
         except AttributeError:
             self.article.author = 'NOT FOUND'
 
