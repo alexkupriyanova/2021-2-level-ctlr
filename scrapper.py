@@ -42,17 +42,11 @@ class Crawler:
 
 
     def _extract_url(self, article_bs):
-        not_full_urls = []
-        all_urls_bs = article_bs.find_all('a')
-        for url_bs in all_urls_bs:
-            url_to_article = url_bs['href']
-            not_full_urls.append(url_to_article)
-        full_urls = [HTTP_PATTERN + not_full_url for not_full_url in
-                     not_full_urls if not 'http' in not_full_url]
-
-        for full_url in full_urls:
-            if len(self.urls) < self.max_articles and full_url not in self.urls:
-                self.urls.append(full_url)
+        article_topics = article_bs.find_all('div', class_='mname')
+        for element in article_topics:
+            url = element['href']
+            if len(self.urls) < self.total_max_articles and url not in self.urls:
+                self.urls.append(url)
 
     def find_articles(self):
         """
