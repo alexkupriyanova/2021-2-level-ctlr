@@ -35,18 +35,22 @@ class Crawler:
     """
     Crawler implementation
     """
-    def __init__(self, seed_urls, max_articles: int):
+    def __init__(self, seed_urls, total_max_articles: int):
         self.seed_urls = seed_urls
-        self.max_articles = max_articles
+        self.total_max_articles = total_max_articles
         self.urls = []
 
 
     def _extract_url(self, article_bs):
-        article_topics = article_bs.find_all('a')
-        for element in article_topics:
-            url = element['href']
-            if len(self.urls) < self.max_articles and url not in self.urls:
-                self.urls.append(url)
+        all_urls_bs = article_bs.find_all('div', class_='mnname')
+        urls_to_articles = []
+        for url_bs in all_urls_bs:
+            not_full_url = url_bs.find('a')['href']
+            urls_to_articles.append(HTTP_PATTERN + not_full_url)
+
+        for url_to_article in urls_to_articles:
+            if len(self.urls) < self.total_max_articles:
+                self.urls.append(url_to_article)
 
     def find_articles(self):
         """
