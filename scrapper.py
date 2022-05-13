@@ -100,11 +100,12 @@ class HTMLParser:
             self.article.text += text_bs.text
 
     def parse(self):
-       response = requests.get(url=self.article_url, timeout=60)
+        response = requests.get(url=self.article_url, timeout=60)
         article_bs = BeautifulSoup(response.text, 'lxml')
         self._fill_article_with_text(article_bs)
         self._fill_article_with_meta_information(article_bs)
-
+        
+        return self.article
 
 
 def prepare_environment(base_path):
