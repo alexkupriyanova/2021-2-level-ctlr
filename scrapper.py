@@ -42,7 +42,7 @@ class Crawler:
 
 
     def _extract_url(self, article_bs):
-        article_topics = article_bs.find_all('a', class_='mname')
+        article_topics = article_bs.find_all('a')
         for element in article_topics:
             url = element['href']
             if len(self.urls) < self.max_articles and url not in self.urls:
