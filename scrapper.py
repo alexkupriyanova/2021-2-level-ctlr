@@ -63,7 +63,7 @@ class Crawler:
             response = requests.get(url=seed_url, timeout=60)
             if not response.ok:
                 continue
-            soup = BeautifulSoup (response.text, 'lxml')
+            article_bs = BeautifulSoup (response.text, 'lxml')
             self._extract_url(article_bs)
 
 
