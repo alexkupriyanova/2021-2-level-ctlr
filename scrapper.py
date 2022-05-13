@@ -80,64 +80,30 @@ class HTMLParser:
         self.article = Article(self.article_url, self.article_id)
 
     def _fill_article_with_meta_information(self, article_bs):
-        author_p_tag = article_bs.find(
-            lambda tag: tag.name == "p" and 'strong' in tag.text)
+        self.articles.title = article_bs.find('h2', class_= 'mname').text.strip()
+        
         try:
-            self.article.author = author_p_tag.find_all('sup')[1].text
-        except (AttributeError, IndexError):
-            try:
-                author_span_tag = article_bs.find(
-                    'span', class_='article-info__authors')
-                self.article.author = author_span_tag.find_all('span')[1].text
-            except (AttributeError, IndexError):
-                self.article.author = 'NOT FOUND'
-                #KEY_WORDS
-        self.article.topics = 'NOT FOUND'
-
-        try:
-            raw_date = article_bs.find_all('span',
-                                           class_='article-info__data')[1].text
-            months_dict = {'января': '01',
-                           'февраля': '02',
-                           'марта': '03',
-                           'апреля': '04',
-                           'мая': '05',
-                           'июня': '06',
-                           'июля': '07',
-                           'августа': '08',
-                           'сентября': '09',
-                           'октября': '10',
-                           'ноября': '11',
-                           'декабря': '12',
-                           }
-            for month in months_dict:
-                if month in raw_date:
-                    raw_date = raw_date.replace(month, months_dict[month])
-            self.article.date = datetime.datetime.strptime(raw_date,'%d %m %Y')
-        except (ValueError, IndexError):
-            self.article.date = datetime.datetime.today()
-        self.article.title = article_bs.find("meta", property="og:title")[
-            'content']
+            self.articles.author = article_bs.find('p', 'font size="3"', 'strong', 'em').text.strip().split('  ')[0]
+        except AttributeError:
+            self.article.author = 'NOT FOUND'
+                
+        self.article.topics.append(article_bs.find('p', 'strong', 'font size="3"').text)
+        
+        raw_date = article_bs.find('div', class_='mndata').find('time')['datetime'][:-5]
+        self.article.date = datetime.strptime(raw_date, '%Y-%m-%dT%H:%M:%S')
 
     def _fill_article_with_text(self, article_bs):
-        text = article_bs.find('p').text
-        self.article.text = text
+        self.article.text = ''
+        texts_bs = article_bs.find('div', class_='onemidnew')
+        list_with_texts = texts_bs.find_all('p')
+        for text_bs in list_with_texts:
+            self.article.text += text_bs.text
 
     def parse(self):
-        response = requests.get(url=self.article_url)
-        if response.status_code == 200:
-
-            article_bs = BeautifulSoup(response.text, 'lxml')
-
-            self._fill_article_with_text(article_bs)
-            self._fill_article_with_meta_information(article_bs)
-        else:
-            self.article.title = 'NOT FOUND'
-            self.article.date = datetime.datetime.today()
-            self.article.author = 'NOT FOUND'
-            self.article.topics = []
-            self.article.text = 'NOT FOUND'
-        return self.article
+       response = requests.get(url=self.article_url, timeout=60)
+        article_bs = BeautifulSoup(response.text, 'lxml')
+        self._fill_article_with_text(article_bs)
+        self._fill_article_with_meta_information(article_bs)
 
 
 
