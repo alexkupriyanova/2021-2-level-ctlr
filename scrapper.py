@@ -80,15 +80,16 @@ class HTMLParser:
         self.article = Article(self.article_url, self.article_id)
 
     def _fill_article_with_meta_information(self, article_bs):
-        self.articles.title = article_bs.find('h2', class_= 'mname').text.strip()
         
+        self.article.title = article_bs.find('h2', class_= 'mname').text.strip()
+
         try:
-            self.articles.author = article_bs.find('p', 'font size="3"', 'strong', 'em').text.strip().split('  ')[0]
+            self.article.author = article_bs.find('p', 'font size="3"', 'strong', 'em').text.strip().split('  ')[0]
         except AttributeError:
             self.article.author = 'NOT FOUND'
-                
+
         self.article.topics.append(article_bs.find('p', 'strong', 'font size="3"').text)
-        
+
         raw_date = article_bs.find('div', class_='mndata').find('time')['datetime'][:-5]
         self.article.date = datetime.strptime(raw_date, '%Y-%m-%dT%H:%M:%S')
 
@@ -104,7 +105,7 @@ class HTMLParser:
         article_bs = BeautifulSoup(response.text, 'lxml')
         self._fill_article_with_text(article_bs)
         self._fill_article_with_meta_information(article_bs)
-        
+
         return self.article
 
 
