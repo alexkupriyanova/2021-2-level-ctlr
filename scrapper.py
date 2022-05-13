@@ -45,7 +45,7 @@ class Crawler:
         article_topics = article_bs.find_all('div', class_='mname')
         for element in article_topics:
             url = element['href']
-            if len(self.urls) < self.total_max_articles and url not in self.urls:
+            if len(self.urls) < self.max_articles and url not in self.urls:
                 self.urls.append(url)
 
     def find_articles(self):
