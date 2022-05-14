@@ -59,6 +59,7 @@ class Crawler:
         for seed_url in self.seed_urls:
             sleep (3)
             response = requests.get(url=seed_url, timeout=60)
+            response.encoding = 'windows-1251'
             if not response.ok:
                 continue
             article_bs = BeautifulSoup (response.text, 'lxml')
@@ -79,17 +80,17 @@ class HTMLParser:
 
     def _fill_article_with_meta_information(self, article_bs):
 
-        self.article.title = article_bs.find('h2', class_= 'mname').get_text(strip = True)
+        self.article.title = article_bs.find('h2').text
 
         try:
             self.article.author = article_bs.find('em').text.strip().split('  ')[0]
         except AttributeError:
             self.article.author = 'NOT FOUND'
 
-        self.article.topics.append(article_bs.find('p', 'strong', 'font size="3"').text)
+        self.article.topics.append(article_bs.find('h1').text)
 
-        raw_date = article_bs.find('div', class_='mndata').find('time')['datetime'][:-5]
-        self.article.date = datetime.strptime(raw_date, '%Y-%m-%dT%H:%M:%S')
+        raw_date = article_bs.find('div', class_='mndata').text
+        self.article.date = datetime.strptime(raw_date, '%d.%m.%Y')
 
     def _fill_article_with_text(self, article_bs):
         self.article.text = ''
@@ -100,6 +101,7 @@ class HTMLParser:
 
     def parse(self):
         response = requests.get(url=self.article_url, timeout=60)
+        response.encoding = 'windows-1251'
         article_bs = BeautifulSoup(response.text, 'lxml')
         self._fill_article_with_text(article_bs)
         self._fill_article_with_meta_information(article_bs)
