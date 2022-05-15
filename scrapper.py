@@ -88,7 +88,7 @@ class HTMLParser:
         self.article.author = 'NOT FOUND'
         try:
             self.article.topics.append(article_bs.find('h1').text)
-        except:
+        except AttributeError:
             self.article.topics = 'NOT FOUND'
 
         raw_date = article_bs.find('div', class_='mndata').text
