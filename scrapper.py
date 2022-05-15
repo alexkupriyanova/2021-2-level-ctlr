@@ -82,7 +82,7 @@ class HTMLParser:
 
         self.article.title = article_bs.find('h2').text
 
-   
+
         self.article.author = 'NOT FOUND'
 
         self.article.topics.append(article_bs.find('h1').text)
