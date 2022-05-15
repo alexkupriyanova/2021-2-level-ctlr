@@ -82,10 +82,8 @@ class HTMLParser:
 
         self.article.title = article_bs.find('h2').text
 
-        try:
-            self.article.author = article_bs.find('em').text.strip().split('  ')[0]
-        except AttributeError:
-            self.article.author = 'NOT FOUND'
+        
+        self.article.author = 'NOT FOUND'
 
         self.article.topics.append(article_bs.find('h1').text)
 
