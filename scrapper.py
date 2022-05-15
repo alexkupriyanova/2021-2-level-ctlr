@@ -82,7 +82,7 @@ class HTMLParser:
         try:
             self.article.title = article_bs.find('h2').text
         except AttributeError:
-        self.article.title = 'NOT FOUND'    
+            self.article.title = 'NOT FOUND'    
 
 
         self.article.author = 'NOT FOUND'
