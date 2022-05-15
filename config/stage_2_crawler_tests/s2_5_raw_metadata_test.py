@@ -110,10 +110,10 @@ class RawMediumDataValidator(unittest.TestCase):
             if metadata[1]['url'].endswith(".pdf"):
                 continue
             msg = "Can not open URL: %s. Check how you collect URLs"
-            self.assertTrue(requests.get(metadata[1]['url']),
+            self.assertTrue(requests.get(metadata[1]['url'], timeout = 60),
                             msg=msg % metadata[1]['url'])
 
-            html_source = requests.get(metadata[1]['url']).text
+            html_source = requests.get(metadata[1]['url'], timeout = 60).text
             msg = "Title is not found by specified in metadata " \
                   "URL %s. Check how you collect titles"
             self.assertTrue(check_title_in_html(metadata[1]['title'],
@@ -178,7 +178,7 @@ class RawAdvancedDataValidator(unittest.TestCase):
             if metadata[1]['url'].endswith(".pdf"):
                 continue
 
-            html_source = requests.get(metadata[1]['url']).text
+            html_source = requests.get(metadata[1]['url'], timeout = 60).text
 
             message = f"Date <{metadata[1]['date']}> do not match given " \
                       f"format <{self.data_pattern}> " \
