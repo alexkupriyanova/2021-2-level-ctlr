@@ -80,11 +80,11 @@ class HTMLParser:
 
     def _fill_article_with_meta_information(self, article_bs):
 
-        self.article.title = article_bs.find('h1').text
+        self.article.title = article_bs.find('h2').text
 
         self.article.author = 'NOT FOUND'
         try:
-            self.article.topics.append(article_bs.find('h2').text)
+            self.article.topics.append(article_bs.find('h1').text)
         except AttributeError:
             self.article.topics = 'NOT FOUND'
 
